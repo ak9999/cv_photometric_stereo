@@ -9,7 +9,7 @@ Purpose:        Homework #4
 
 # "Lambertian Model"
 
-## Series of programs to recognize lines in an image using the Hough Transform.
+## A vision system that recovers the orientation and reflectance of an object’s surface using photometric stereo.
 
 I. Parts Completed
 - s1 Not done yet
