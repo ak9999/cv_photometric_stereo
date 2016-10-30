@@ -3,6 +3,7 @@
  * s1: Locate sphere in an image and compute the center and radius.
  */
 
+#include <iostream>
 #include <string>
 #include <cstdlib>
 #include <fstream>
@@ -16,7 +17,7 @@ int main(int argc, char ** argv)
 	if (argc != 4)
 	{
 		cout <<
-		"Usage: " << argv[0] << "{input original image} {input threshold value} {output parameters file}"
+		"Usage: " << argv[0] << " {input original image} {input threshold value} {output parameters file}"
 		<< endl;
 		return 0;
 	}
