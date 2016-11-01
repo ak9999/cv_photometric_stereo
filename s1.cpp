@@ -45,6 +45,8 @@ int main(int argc, char ** argv)
 	 * The resulting parameters file is a text file consisting of a single line containing the
 	 *	x-coordinate of the center, the y-coordinate of the center, and the radius of the circle,
 	 *	separated by a space.
+     * 
+     * Find center, then find the outer 4 points.
 	 */
 
 	return 0;
