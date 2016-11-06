@@ -42,7 +42,6 @@ int main(int argc, char ** argv)
 	Threshold(img, threshold);
 	img.SetNumberGrayLevels(1);
 
-<<<<<<< HEAD
 	/*
 	 * Compute the centroid to find the circle's location.
 	 * To compute the radius, average the differences between the leftmost and the rightmost
@@ -52,7 +51,7 @@ int main(int argc, char ** argv)
 	 *	x-coordinate of the center, the y-coordinate of the center, and the radius of the circle,
 	 *	separated by a space.
 	 */
-=======
+
 	int area = GetCircleArea(img);
 
 	auto p = GetCircleCenter(img, area);
@@ -62,7 +61,6 @@ int main(int argc, char ** argv)
 	int radius = GetCircleRadius(img, p.first, p.second);
 
 	cout << radius << endl;
->>>>>>> 6e993d845f1079b2e691993da1d911c6f4c655a4
 
 	int area = GetCircleArea(img);
 
@@ -159,8 +157,4 @@ int GetCircleRadius(Image &img, int center_x, int center_y)
 	int radius = (d_leftright + d_updown) / 2;
 
 	return radius;
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> 6e993d845f1079b2e691993da1d911c6f4c655a4
