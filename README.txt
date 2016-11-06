@@ -12,13 +12,15 @@ Purpose:        Homework #4
 ## A vision system that recovers the orientation and reflectance of an object’s surface using photometric stereo.
 
 I. Parts Completed
-- s1 Not done yet
+- s1
 - s2 Not done yet
 - s3 Not done yet
 - s4 Not done yet
 
 
 II. Bugs Encountered
+- s1: Use threshold >= 75. Anything lower than 75 will cause the program to abort.
+    - I don't know why this happens.
 
 III. Run Instructions
 - Run `make` to build
