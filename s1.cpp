@@ -67,6 +67,7 @@ int main(int argc, char ** argv)
 	return 0;
 }
 
+// Precondition: Image MUST be binary.
 int GetCircleArea(Image &img)
 {
 	int area = 0;
@@ -75,6 +76,7 @@ int GetCircleArea(Image &img)
 	{
 		for (unsigned int j = 0; j < img.num_columns(); j++)
 		{
+			// Just count every white pixel.
 			if (img.GetPixel(i,j) != 0) { area += 1; }
 		}
 	}
@@ -82,6 +84,7 @@ int GetCircleArea(Image &img)
 	return area;
 }
 
+// Precondition: Image MUST be binary.
 pair<int,int> GetCircleCenter(Image &img, int area)
 {
 	int X = 0; int Y = 0;
@@ -103,6 +106,7 @@ pair<int,int> GetCircleCenter(Image &img, int area)
 	return make_pair(x,y);
 }
 
+// Precondition: Image MUST be binary.
 int GetCircleRadius(Image &img, int center_x, int center_y)
 {
 	int r_up = 0; int r_down = 0; int r_left = 0; int r_right = 0;
