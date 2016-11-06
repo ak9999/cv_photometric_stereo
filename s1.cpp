@@ -62,15 +62,17 @@ int main(int argc, char ** argv)
 
 	cout << radius << endl;
 
-	int area = GetCircleArea(img);
+	{
+		fstream of(output);
+		if(!of.is_open())
+		{
+			cout << "Could not open " << output << " for writing. Exiting." << endl;
+			return 0;
+		}
 
-	auto p = GetCircleCenter(img, area);
-
-	cout << p.first << " " << p.second << endl;
-
-	int radius = GetCircleRadius(img, p.first, p.second);
-
-	cout << radius << endl;
+		of << p.first << " " << p.second << " " << radius << endl;
+		of.close();
+	}
 
 	return 0;
 }
