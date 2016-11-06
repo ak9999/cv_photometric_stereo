@@ -50,7 +50,7 @@ int main(int argc, char ** argv)
 
 	cout << "Area: " << area << endl;
 	cout << "Centroid: (" << p.first << "," << p.second << ")" << endl;
-	cout << radius << endl;
+	cout << "Radius: " << radius << endl;
 
 	{
 		fstream of(output, std::ios::out);
