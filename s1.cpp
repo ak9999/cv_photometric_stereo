@@ -42,28 +42,18 @@ int main(int argc, char ** argv)
 	Threshold(img, threshold);
 	img.SetNumberGrayLevels(1);
 
-	/*
-	 * Compute the centroid to find the circle's location.
-	 * To compute the radius, average the differences between the leftmost and the rightmost
-	 *	and the uppermost and the lowermost points of the binary circle to obtain the diameter.
-	 *	Then divide by 2 to obtain the radius.
-	 * The resulting parameters file is a text file consisting of a single line containing the
-	 *	x-coordinate of the center, the y-coordinate of the center, and the radius of the circle,
-	 *	separated by a space.
-	 */
-
 	int area = GetCircleArea(img);
 
 	auto p = GetCircleCenter(img, area);
 
-	cout << p.first << " " << p.second << endl;
-
 	int radius = GetCircleRadius(img, p.first, p.second);
 
+	cout << "Area: " << area << endl;
+	cout << "Centroid: (" << p.first << "," << p.second << ")" << endl;
 	cout << radius << endl;
 
 	{
-		fstream of(output);
+		fstream of(output, std::ios::out);
 		if(!of.is_open())
 		{
 			cout << "Could not open " << output << " for writing. Exiting." << endl;
@@ -107,8 +97,8 @@ pair<int,int> GetCircleCenter(Image &img, int area)
 			}
 		}
 	}
-	int x = (1 / area) * X;
-	int y = (1 / area) * Y;
+	int x = X / (double)area;
+	int y = Y / (double)area;
 
 	return make_pair(x,y);
 }
