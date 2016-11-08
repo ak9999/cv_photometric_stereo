@@ -8,7 +8,6 @@
 #include <cstdlib>
 #include <fstream>
 #include <utility>
-#include <sstream>
 #include "image.h"
 
 using namespace std;
@@ -36,7 +35,7 @@ int main(int argc, char ** argv)
 		fstream params(parameters);
 		if(!params.is_open())
 		{
-			cout << "Could not open " << parameters << " for reading. Exiting." << endl;
+			cout << parameters << " can't be opened for reading." << endl;
 			return 0;
 		}
 		params >> center_x >> center_y >> radius;
