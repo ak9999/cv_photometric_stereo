@@ -5,9 +5,7 @@
 
 #include <iostream>
 #include <string>
-#include <cstdlib>
 #include <fstream>
-#include <utility>
 #include "image.h"
 
 using namespace std;
