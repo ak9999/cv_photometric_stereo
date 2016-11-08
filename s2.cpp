@@ -8,6 +8,7 @@
 #include <cstdlib>
 #include <fstream>
 #include <utility>
+#include <sstream>
 #include "image.h"
 
 using namespace std;
@@ -28,6 +29,19 @@ int main(int argc, char ** argv)
 	const string image2(argv[3]);
 	const string image3(argv[4]);
 	const string output_directions(argv[5]);
+
+	int center_x, center_y, radius;
+
+	{
+		fstream params(parameters);
+		if(!params.is_open())
+		{
+			cout << "Could not open " << parameters << " for reading. Exiting." << endl;
+			return 0;
+		}
+		params >> center_x >> center_y >> radius;
+		params.close();
+	} // Read parameter file into variables.
 
 	Image sphere1, sphere2, sphere3;
 	if (!ReadImage(image1, &sphere1))
