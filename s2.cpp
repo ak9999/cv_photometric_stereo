@@ -6,7 +6,6 @@
 #include <iostream>
 #include <string>
 #include <fstream>
-#include <utility>
 #include <cmath>
 #include <tuple>
 #include <fstream>
@@ -17,24 +16,24 @@ using namespace ComputerVisionProjects;
 
 auto get_brightest_pixel(Image &img)
 {
-	auto pixel = make_pair(0,0);
+	auto pixel = make_tuple(0,0);
 	for (unsigned int i = 0; i < img.num_rows(); ++i)
 	{
 		for (unsigned int j = 0; j < img.num_columns(); ++j)
 		{
-			if (img.GetPixel(pixel.first, pixel.second) < img.GetPixel(i,j))
+			if (img.GetPixel(get<0>(pixel), get<1>(pixel)) < img.GetPixel(i,j))
 			{
-				pixel = make_pair(i,j);
+				pixel = make_tuple(i,j);
 			}
 		}
 	}
 	return pixel;
 }
 
-auto compute_normal(pair<int,int> pixel, pair<int,int> center, int radius)
+auto compute_normal(tuple<int,int> pixel, tuple<int,int> center, int radius)
 {
-	int x_diff = pixel.first - center.first;
-	int y_diff = pixel.second - center.second;
+	int x_diff = get<0>(pixel) - get<0>(center);
+	int y_diff = get<1>(pixel) - get<1>(center);
 	auto z_squared = pow(radius, 2) - pow(x_diff, 2) - pow(y_diff, 2);
 	auto z = -1 * sqrt(z_squared);
 	return make_tuple(x_diff, y_diff, z);
@@ -51,8 +50,6 @@ auto scale_normal(int brightest, tuple<int, int, int> normal)
 	double y_new = ((double)brightest*y)/magnitude;
 	double z_new = ((double)brightest*z)/magnitude;
 	return make_tuple(x_new, y_new, z_new);
-
-	// return make_tuple((double)(x/magnitude), (double)(y/magnitude), (double)(z/magnitude));
 }
 
 int main(int argc, char ** argv)
@@ -84,7 +81,7 @@ int main(int argc, char ** argv)
 		params.close();
 	} // Read parameter file into variables.
 
-	auto center_sphere = make_pair(center_x, center_y);
+	auto center_sphere = make_tuple(center_x, center_y);
 
 	Image sphere1, sphere2, sphere3;
 	if (!ReadImage(image1, &sphere1))
@@ -94,7 +91,7 @@ int main(int argc, char ** argv)
 	}
 
 	auto bright1 = get_brightest_pixel(sphere1);
-	int pixel1 = sphere1.GetPixel(bright1.first, bright1.second);
+	int pixel1 = sphere1.GetPixel(get<0>(bright1), get<1>(bright1));
 	auto normal1 = compute_normal(bright1, center_sphere, radius);
 	auto scale1 = scale_normal(pixel1, normal1);
 
@@ -105,7 +102,7 @@ int main(int argc, char ** argv)
 	}
 
 	auto bright2 = get_brightest_pixel(sphere2);
-	int pixel2 = sphere2.GetPixel(bright2.first, bright2.second);
+	int pixel2 = sphere2.GetPixel(get<0>(bright2), get<1>(bright2));
 	auto normal2 = compute_normal(bright2, center_sphere, radius);
 	auto scale2 = scale_normal(pixel2, normal2);
 
@@ -116,7 +113,7 @@ int main(int argc, char ** argv)
 	}
 
 	auto bright3 = get_brightest_pixel(sphere3);
-	int pixel3 = sphere3.GetPixel(bright3.first, bright3.second);
+	int pixel3 = sphere3.GetPixel(get<0>(bright3), get<1>(bright3));
 	auto normal3 = compute_normal(bright3, center_sphere, radius);
 	auto scale3 = scale_normal(pixel3, normal3);
 
