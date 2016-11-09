@@ -25,6 +25,8 @@ II. Bugs Encountered
 III. Run Instructions
 - Run `make` to build
 - ./s1 {input original image} {input threshold value} {output parameters file}
+        I used a threshold value of 100.
+
 - ./s2 {input parameters file} {image 1} {image 2} {image 3} {output directions file}
 - ./s3 {input directions} {image 1} {image 2} {image 3} {step} {threshold} {output}
 - ./s4 {input directions} {image 1} {image 2} {image 3} {threshold} {output}
