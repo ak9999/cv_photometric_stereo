@@ -31,14 +31,25 @@ auto get_brightest_pixel(Image &img)
 	return pixel;
 }
 
-tuple<int,int,int> compute_normal(pair<int,int> pixel, pair<int,int> center, int radius)
+auto compute_normal(pair<int,int> pixel, pair<int,int> center, int radius)
 {
 	int x_diff = pixel.first - center.first;
 	int y_diff = pixel.second - center.second;
 	auto z_squared = pow(radius, 2) - pow(x_diff, 2) - pow(y_diff, 2);
-	auto z = round(sqrt(z_squared));
+	auto z = sqrt(z_squared);
 
 	return make_tuple(x_diff, y_diff, z);
+}
+
+auto scale_normal(tuple<int, int, int> normal)
+{
+	int x = get<0>(normal);
+	int y = get<1>(normal);
+	int z = get<2>(normal);
+
+	auto magnitude = sqrt( pow(x,2) + pow(y,2) + pow(z,2) );
+
+	return make_tuple((x/magnitude), (y/magnitude), (z/magnitude));
 }
 
 int main(int argc, char ** argv)
@@ -89,6 +100,11 @@ int main(int argc, char ** argv)
 							 << get<1>(normal1) << ","
 							 << get<2>(normal1) << ")" << endl;
 
+	auto scale1 = scale_normal(normal1);
+	cout << "Direction: (" << get<0>(scale1) << ","
+							 << get<1>(scale1) << ","
+							 << get<2>(scale1) << ")" << endl;
+
 	if (!ReadImage(image2, &sphere2))
 	{
 		cout << "Can\'t read file " << image2 << ", sorry." << endl;
@@ -105,6 +121,11 @@ int main(int argc, char ** argv)
 							 << get<1>(normal2) << ","
 							 << get<2>(normal2) << ")" << endl;
 
+	auto scale2 = scale_normal(normal2);
+	cout << "Direction: (" << get<0>(scale2) << ","
+							 << get<1>(scale2) << ","
+							 << get<2>(scale2) << ")" << endl;
+
 	if (!ReadImage(image3, &sphere3))
 	{
 		cout << "Can\'t read file " << image3 << ", sorry." << endl;
@@ -120,6 +141,11 @@ int main(int argc, char ** argv)
 	cout << "Coordinates: (" << get<0>(normal3) << ","
 							 << get<1>(normal3) << ","
 							 << get<2>(normal3) << ")" << endl;
+
+	auto scale3 = scale_normal(normal3);
+	cout << "Direction: (" << get<0>(scale3) << ","
+							 << get<1>(scale3) << ","
+							 << get<2>(scale3) << ")" << endl;
 
 	return 0;
 }
