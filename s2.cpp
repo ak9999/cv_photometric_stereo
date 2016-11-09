@@ -37,7 +37,6 @@ auto compute_normal(pair<int,int> pixel, pair<int,int> center, int radius)
 	int y_diff = pixel.second - center.second;
 	auto z_squared = pow(radius, 2) - pow(x_diff, 2) - pow(y_diff, 2);
 	auto z = sqrt(z_squared);
-
 	return make_tuple(x_diff, y_diff, z);
 }
 
@@ -46,10 +45,8 @@ auto scale_normal(tuple<int, int, int> normal)
 	int x = get<0>(normal);
 	int y = get<1>(normal);
 	int z = get<2>(normal);
-
 	auto magnitude = sqrt( pow(x,2) + pow(y,2) + pow(z,2) );
-
-	return make_tuple((x/magnitude), (y/magnitude), (z/magnitude));
+	return make_tuple((double)(x/magnitude), (double)(y/magnitude), (double)(z/magnitude));
 }
 
 int main(int argc, char ** argv)
