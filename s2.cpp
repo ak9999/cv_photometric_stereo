@@ -31,12 +31,12 @@ auto get_brightest_pixel(Image &img)
 	return pixel;
 }
 
-auto compute_normal(pair<int,int> pixel, pair<int,int> center, int radius)
+tuple<int,int,int> compute_normal(pair<int,int> pixel, pair<int,int> center, int radius)
 {
 	int x_diff = pixel.first - center.first;
 	int y_diff = pixel.second - center.second;
 	auto z_squared = pow(radius, 2) - pow(x_diff, 2) - pow(y_diff, 2);
-	auto z = sqrt(z_squared);
+	auto z = round(sqrt(z_squared));
 
 	return make_tuple(x_diff, y_diff, z);
 }
