@@ -1,6 +1,6 @@
 /*
  * Author: Abdullah Khan
- * s1: Locate sphere in an image and compute the center and radius.
+ * s2: Brightness and directions.
  */
 
 #include <iostream>
