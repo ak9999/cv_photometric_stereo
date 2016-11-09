@@ -46,9 +46,9 @@ auto scale_normal(int brightest, tuple<int, int, int> normal)
 	int z = get<2>(normal);
 	double magnitude = sqrt( pow(x,2) + pow(y,2) + pow(z,2) );
 
-	double x_new = ((double)brightest*x)/magnitude;
-	double y_new = ((double)brightest*y)/magnitude;
-	double z_new = ((double)brightest*z)/magnitude;
+	double x_new = (brightest*x)/magnitude;
+	double y_new = (brightest*y)/magnitude;
+	double z_new = (brightest*z)/magnitude;
 	return make_tuple(x_new, y_new, z_new);
 }
 
