@@ -91,19 +91,8 @@ int main(int argc, char ** argv)
 	}
 
 	auto bright1 = get_brightest_pixel(sphere1);
-	cout << "Brightest pixel found at: "
-		 << "("  << bright1.first << "," << bright1.second << ")" << endl;
-	cout << "Brightness value: " << sphere1.GetPixel(bright1.first, bright1.second) << endl;
-
 	auto normal1 = compute_normal(bright1, center_sphere, radius);
-	cout << "Coordinates: (" << get<0>(normal1) << ","
-							 << get<1>(normal1) << ","
-							 << get<2>(normal1) << ")" << endl;
-
 	auto scale1 = scale_normal(normal1);
-	cout << "Direction: (" << get<0>(scale1) << ","
-							 << get<1>(scale1) << ","
-							 << get<2>(scale1) << ")" << endl;
 
 	if (!ReadImage(image2, &sphere2))
 	{
@@ -112,19 +101,8 @@ int main(int argc, char ** argv)
 	}
 
 	auto bright2 = get_brightest_pixel(sphere2);
-	cout << "Brightest pixel found at: "
-		 << "("  << bright2.first << "," << bright2.second << ")" << endl;
-	cout << "Brightness value: " << sphere2.GetPixel(bright2.first, bright2.second) << endl;
-
 	auto normal2 = compute_normal(bright2, center_sphere, radius);
-	cout << "Coordinates: (" << get<0>(normal2) << ","
-							 << get<1>(normal2) << ","
-							 << get<2>(normal2) << ")" << endl;
-
 	auto scale2 = scale_normal(normal2);
-	cout << "Direction: (" << get<0>(scale2) << ","
-							 << get<1>(scale2) << ","
-							 << get<2>(scale2) << ")" << endl;
 
 	if (!ReadImage(image3, &sphere3))
 	{
@@ -133,19 +111,21 @@ int main(int argc, char ** argv)
 	}
 
 	auto bright3 = get_brightest_pixel(sphere3);
-	cout << "Brightest pixel found at: "
-		 << "("  << bright3.first << "," << bright3.second << ")" << endl;
-	cout << "Brightness value: " << sphere3.GetPixel(bright3.first, bright3.second) << endl;
-
 	auto normal3 = compute_normal(bright3, center_sphere, radius);
-	cout << "Coordinates: (" << get<0>(normal3) << ","
-							 << get<1>(normal3) << ","
-							 << get<2>(normal3) << ")" << endl;
-
 	auto scale3 = scale_normal(normal3);
-	cout << "Direction: (" << get<0>(scale3) << ","
-							 << get<1>(scale3) << ","
-							 << get<2>(scale3) << ")" << endl;
+
+	{
+		fstream directions(output_directions, std::ios::out);
+		if(!directions.is_open())
+		{
+			cout << output_directions << " can't be opened for reading." << endl;
+			return 0;
+		}
+		directions << get<0>(normal1) << " " << get<1>(normal1) << " " << get<2>(normal1) << endl;
+		directions << get<0>(normal2) << " " << get<1>(normal2) << " " << get<2>(normal2) << endl;
+		directions << get<0>(normal3) << " " << get<1>(normal3) << " " << get<2>(normal3) << endl;
+		directions.close();
+	} // Read parameter file into variables.
 
 	return 0;
 }
