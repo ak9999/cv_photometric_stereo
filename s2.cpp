@@ -36,17 +36,23 @@ auto compute_normal(pair<int,int> pixel, pair<int,int> center, int radius)
 	int x_diff = pixel.first - center.first;
 	int y_diff = pixel.second - center.second;
 	auto z_squared = pow(radius, 2) - pow(x_diff, 2) - pow(y_diff, 2);
-	auto z = sqrt(z_squared);
+	auto z = -1 * sqrt(z_squared);
 	return make_tuple(x_diff, y_diff, z);
 }
 
-auto scale_normal(tuple<int, int, int> normal)
+auto scale_normal(int brightest, tuple<int, int, int> normal)
 {
 	int x = get<0>(normal);
 	int y = get<1>(normal);
 	int z = get<2>(normal);
-	auto magnitude = sqrt( pow(x,2) + pow(y,2) + pow(z,2) );
-	return make_tuple((double)(x/magnitude), (double)(y/magnitude), (double)(z/magnitude));
+	double magnitude = sqrt( pow(x,2) + pow(y,2) + pow(z,2) );
+
+	double x_new = ((double)brightest*x)/magnitude;
+	double y_new = ((double)brightest*y)/magnitude;
+	double z_new = ((double)brightest*z)/magnitude;
+	return make_tuple(x_new, y_new, z_new);
+
+	// return make_tuple((double)(x/magnitude), (double)(y/magnitude), (double)(z/magnitude));
 }
 
 int main(int argc, char ** argv)
@@ -88,8 +94,9 @@ int main(int argc, char ** argv)
 	}
 
 	auto bright1 = get_brightest_pixel(sphere1);
+	int pixel1 = sphere1.GetPixel(bright1.first, bright1.second);
 	auto normal1 = compute_normal(bright1, center_sphere, radius);
-	auto scale1 = scale_normal(normal1);
+	auto scale1 = scale_normal(pixel1, normal1);
 
 	if (!ReadImage(image2, &sphere2))
 	{
@@ -98,8 +105,9 @@ int main(int argc, char ** argv)
 	}
 
 	auto bright2 = get_brightest_pixel(sphere2);
+	int pixel2 = sphere2.GetPixel(bright2.first, bright2.second);
 	auto normal2 = compute_normal(bright2, center_sphere, radius);
-	auto scale2 = scale_normal(normal2);
+	auto scale2 = scale_normal(pixel2, normal2);
 
 	if (!ReadImage(image3, &sphere3))
 	{
@@ -108,8 +116,9 @@ int main(int argc, char ** argv)
 	}
 
 	auto bright3 = get_brightest_pixel(sphere3);
+	int pixel3 = sphere3.GetPixel(bright3.first, bright3.second);
 	auto normal3 = compute_normal(bright3, center_sphere, radius);
-	auto scale3 = scale_normal(normal3);
+	auto scale3 = scale_normal(pixel3, normal3);
 
 	{
 		fstream directions(output_directions, std::ios::out);
@@ -118,9 +127,9 @@ int main(int argc, char ** argv)
 			cout << output_directions << " can't be opened for reading." << endl;
 			return 0;
 		}
-		directions << get<0>(normal1) << " " << get<1>(normal1) << " " << get<2>(normal1) << endl;
-		directions << get<0>(normal2) << " " << get<1>(normal2) << " " << get<2>(normal2) << endl;
-		directions << get<0>(normal3) << " " << get<1>(normal3) << " " << get<2>(normal3) << endl;
+		directions << get<0>(scale1) << " " << get<1>(scale1) << " " << get<2>(scale1) << endl;
+		directions << get<0>(scale2) << " " << get<1>(scale2) << " " << get<2>(scale2) << endl;
+		directions << get<0>(scale3) << " " << get<1>(scale3) << " " << get<2>(scale3) << endl;
 		directions.close();
 	} // Read parameter file into variables.
 
