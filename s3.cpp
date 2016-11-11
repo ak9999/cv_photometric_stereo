@@ -16,14 +16,16 @@
 using namespace std;
 using namespace ComputerVisionProjects;
 
+// Get parameters of object
 int GetObjectArea(Image &img);
 tuple<double,double> GetObjectCenter(Image &img, int area);
 tuple<double,double,double> compute_normal(tuple<int,int> pixel, tuple<int,int> center, int radius);
+int GetCircleRadius(Image &img, int center_x, int center_y);
 
+// Matrix operations
 double Determinant(array<array<double, 3>, 3> a, int n);
 void CoFactor(array<array<double, 3>, 3> a, int n, array<array<double, 3>, 3> &b);
 void Transpose(array<array<double, 3>, 3> &a, int n);
-
 void InverseDet(array<array<double, 3>, 3> &a, double det);
 
 int main(int argc, char ** argv)
@@ -154,6 +156,54 @@ tuple<double,double,double> compute_normal(tuple<int,int> pixel, tuple<int,int> 
 	auto z_squared = pow(radius, 2) - pow(x_diff, 2) - pow(y_diff, 2);
 	auto z = -1 * sqrt(z_squared);
 	return make_tuple(x_diff, y_diff, z);
+}
+
+int GetCircleRadius(Image &img, int center_x, int center_y)
+{
+	int r_up = 0; int r_down = 0; int r_left = 0; int r_right = 0;
+
+	int counter = 0;
+	int current_pixel = img.GetPixel(center_x, center_y);
+	while (current_pixel != 0) // Going down.
+	{
+		counter++;
+		current_pixel = img.GetPixel(center_x, center_y + counter);
+		if (current_pixel != 0) { ++r_up; }
+	}
+
+	counter = 0; // Reset counter.
+	current_pixel = img.GetPixel(center_x, center_y); // Reset current pixel.
+	while (current_pixel != 0) // Going up.
+	{
+		counter++;
+		current_pixel = img.GetPixel(center_x, center_y - counter);
+		if (current_pixel != 0) { ++r_down; }
+	}
+
+	counter = 0; // Reset counter.
+	current_pixel = img.GetPixel(center_x, center_y); // Reset current pixel.
+	while (current_pixel != 0) // Going left.
+	{
+		counter++;
+		current_pixel = img.GetPixel(center_x - counter, center_y);
+		if (current_pixel != 0) { ++r_down; }
+	}
+
+	counter = 0; // Reset counter.
+	current_pixel = img.GetPixel(center_x, center_y); // Reset current pixel.
+	while (current_pixel != 0) // Going right.
+	{
+		counter++;
+		current_pixel = img.GetPixel(center_x + counter, center_y);
+		if (current_pixel != 0) { ++r_down; }
+	}
+
+	double d_leftright = abs(r_right - r_left);
+	double d_updown = abs(r_down - r_up);
+
+	int radius = (d_leftright + d_updown) / 2;
+
+	return radius;
 }
 
 double Determinant(array<array<double, 3>, 3> a, int n)
