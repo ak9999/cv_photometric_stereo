@@ -16,7 +16,7 @@ using namespace std;
 using namespace ComputerVisionProjects;
 
 /* Shortcut method for 3 x 3 matrices:
-	https://www.khanacademy.org/math/algebra-home/alg-matrices/alg-determinants-and-inverses-of-large-matrices/v/finding-the-determinant-of-a-3x3-matrix-method-1
+https://www.khanacademy.org/math/algebra-home/alg-matrices/alg-determinants-and-inverses-of-large-matrices/v/finding-the-determinant-of-a-3x3-matrix-method-1
 */
 double GetDeterminant(array<array<double, 3>, 3> mat);
 
