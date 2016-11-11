@@ -1,6 +1,6 @@
 /*
  * Author: Abdullah Khan
- * s2: Brightness and directions.
+ * s3: Needle Map
  */
 
 #include <iostream>
@@ -21,10 +21,16 @@ using namespace ComputerVisionProjects;
 using Matrix3 = array<array<double, 3>, 3>;
 
 // Matrix operations
+void InverseDet(Matrix3 &a, double det);
+
+/*
+ * The following functions were taken from
+ * 		https://www.cs.rochester.edu/~brown/Crypto/assts/projects/adj.html
+ * and edited to work with types Matrix3 and changed to be more like Modern C++.
+ */
 double Determinant(Matrix3 a, int n);
 void CoFactor(Matrix3 a, int n, Matrix3 &b);
 void Transpose(Matrix3 &a, int n);
-void InverseDet(Matrix3 &a, double det);
 
 int main(int argc, char ** argv)
 {
