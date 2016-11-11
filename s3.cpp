@@ -8,6 +8,7 @@
 #include <fstream>
 #include <sstream>
 #include <array>
+#include <tuple>
 #include <cmath>
 #include <cstdlib>
 #include "image.h"
@@ -16,6 +17,9 @@ using namespace std;
 using namespace ComputerVisionProjects;
 
 int GetObjectArea(Image &img);
+tuple<double,double> GetObjectCenter(Image &img, int area);
+tuple<double,double,double> compute_normal(tuple<int,int> pixel, tuple<int,int> center, int radius);
+
 double Determinant(array<array<double, 3>, 3> a, int n);
 void CoFactor(array<array<double, 3>, 3> a, int n, array<array<double, 3>, 3> &b);
 void Transpose(array<array<double, 3>, 3> &a, int n);
@@ -120,6 +124,36 @@ int GetObjectArea(Image &img)
 	}
 
 	return area;
+}
+
+tuple<double,double> GetObjectCenter(Image &img, int area)
+{
+	int X = 0; int Y = 0;
+
+	for (unsigned int i = 0; i < img.num_rows(); i++)
+	{
+		for (unsigned int j = 0; j < img.num_columns(); j++)
+		{
+			if (img.GetPixel(i,j) == 1)
+			{
+				X += i;
+				Y += j;
+			}
+		}
+	}
+	int x = X / (double)area;
+	int y = Y / (double)area;
+
+	return make_tuple(x,y);
+}
+
+tuple<double,double,double> compute_normal(tuple<int,int> pixel, tuple<int,int> center, int radius)
+{
+	double x_diff = get<0>(pixel) - get<0>(center);
+	double y_diff = get<1>(pixel) - get<1>(center);
+	auto z_squared = pow(radius, 2) - pow(x_diff, 2) - pow(y_diff, 2);
+	auto z = -1 * sqrt(z_squared);
+	return make_tuple(x_diff, y_diff, z);
 }
 
 double Determinant(array<array<double, 3>, 3> a, int n)
