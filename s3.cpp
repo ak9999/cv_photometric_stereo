@@ -208,88 +208,85 @@ int GetCircleRadius(Image &img, int center_x, int center_y)
 
 double Determinant(array<array<double, 3>, 3> a, int n)
 {
-   int i,j,j1,j2;
-   double det = 0;
-   array<array<double, 3>, 3> m = {};
+	int i,j,j1,j2;
+	double det = 0;
+	array<array<double, 3>, 3> m = {};
 
-   if (n < 1) { /* Error */
-
-   } else if (n == 1) { /* Shouldn't get used */
-      det = a[0][0];
-   } else if (n == 2) {
-      det = a[0][0] * a[1][1] - a[1][0] * a[0][1];
-   } else {
-      det = 0;
-      for (j1=0;j1<n;j1++) {
-         for (i=1;i<n;i++) {
-            j2 = 0;
-            for (j=0;j<n;j++) {
-               if (j == j1)
-                  continue;
-               m[i-1][j2] = a[i][j];
-               j2++;
-            }
-         }
-         det += pow(-1.0,j1+2.0) * a[0][j1] * Determinant(m,n-1);
-      }
-   }
-   return(det);
+	if (n < 1) { return 0; }
+	else if (n == 1) { det = a[0][0]; }
+	else if (n == 2) { det = a[0][0] * a[1][1] - a[1][0] * a[0][1]; }
+	else
+	{
+		det = 0;
+		for (j1=0;j1<n;j1++) {
+			for (i=1;i<n;i++) {
+				j2 = 0;
+				for (j=0;j<n;j++) {
+					if (j == j1) continue;
+					m[i-1][j2] = a[i][j];
+					j2++;
+				}
+			}
+			det += pow(-1.0,j1+2.0) * a[0][j1] * Determinant(m,n-1);
+		}
+	}
+	return(det);
 }
 
 void CoFactor(array<array<double, 3>, 3> a, int n, array<array<double, 3>, 3> &b)
 {
-   int i,j,ii,jj,i1,j1;
-   double det;
-   array<array<double, 3>, 3> c = {};
+	int i,j,ii,jj,i1,j1;
+	double det;
+	array<array<double, 3>, 3> c = {};
 
-   for (j=0;j<n;j++) {
-      for (i=0;i<n;i++) {
+	for (j=0;j<n;j++) {
+		for (i=0;i<n;i++) {
 
-         /* Form the adjoint a_ij */
-         i1 = 0;
-         for (ii=0;ii<n;ii++) {
-            if (ii == i)
-               continue;
-            j1 = 0;
-            for (jj=0;jj<n;jj++) {
-               if (jj == j)
-                  continue;
-               c[i1][j1] = a[ii][jj];
-               j1++;
-            }
-            i1++;
-         }
+		/* Form the adjoint a_ij */
+			i1 = 0;
+			for (ii=0;ii<n;ii++) {
+				if (ii == i)
+					continue;
+				j1 = 0;
+				for (jj=0;jj<n;jj++) {
+					if (jj == j)
+						continue;
+					c[i1][j1] = a[ii][jj];
+					j1++;
+				}
+				i1++;
+			}
 
-         /* Calculate the determinate */
-         det = Determinant(c,n-1);
+		/* Calculate the determinate */
+			det = Determinant(c,n-1);
 
-         /* Fill in the elements of the cofactor */
-         b[i][j] = pow(-1.0,i+j+2.0) * det;
-      }
-   }
+		/* Fill in the elements of the cofactor */
+			b[i][j] = pow(-1.0,i+j+2.0) * det;
+		}
+	}
 }
 
 void Transpose(array<array<double, 3>, 3> &a, int n)
 {
-   int i,j;
-   double tmp;
+	int i,j;
+	double tmp;
 
-   for (i=1;i<n;i++) {
-      for (j=0;j<i;j++) {
-         tmp = a[i][j];
-         a[i][j] = a[j][i];
-         a[j][i] = tmp;
-      }
-   }
+	for (i=1;i<n;i++) {
+		for (j=0;j<i;j++) {
+			tmp = a[i][j];
+			a[i][j] = a[j][i];
+			a[j][i] = tmp;
+		}
+	}
 }
 
 void InverseDet(array<array<double, 3>, 3> &a, double det)
 {
-   for (int i=0; i < 3; i++)
-   {
-      for (int j=0; j < 3; j++)
-      {
-         a[i][j] = (1/det) * a[i][j];
-      }
-   }
+	for (int i=0; i < 3; i++)
+	{
+		for (int j=0; j < 3; j++)
+		{
+			a[i][j] = (1/det) * a[i][j];
+		}
+	}
 }
