@@ -52,6 +52,53 @@ double Determinant(array<array<double, 3>, 3> a, int n=3)
    return(det);
 }
 
+void CoFactor(array<array<double, 3>, 3> a,int n, array<array<double, 3>, 3> &b)
+{
+   int i,j,ii,jj,i1,j1;
+   double det;
+   array<array<double, 3>, 3> c = {};
+
+   for (j=0;j<n;j++) {
+      for (i=0;i<n;i++) {
+
+         /* Form the adjoint a_ij */
+         i1 = 0;
+         for (ii=0;ii<n;ii++) {
+            if (ii == i)
+               continue;
+            j1 = 0;
+            for (jj=0;jj<n;jj++) {
+               if (jj == j)
+                  continue;
+               c[i1][j1] = a[ii][jj];
+               j1++;
+            }
+            i1++;
+         }
+
+         /* Calculate the determinate */
+         det = Determinant(c,n-1);
+
+         /* Fill in the elements of the cofactor */
+         b[i][j] = pow(-1.0,i+j+2.0) * det;
+      }
+   }
+}
+
+void Transpose(array<array<double, 3>, 3>  &a,int n)
+{
+   int i,j;
+   double tmp;
+
+   for (i=1;i<n;i++) {
+      for (j=0;j<i;j++) {
+         tmp = a[i][j];
+         a[i][j] = a[j][i];
+         a[j][i] = tmp;
+      }
+   }
+}
+
 int main(int argc, char ** argv)
 {
 	if (argc != 8)
@@ -118,6 +165,18 @@ int main(int argc, char ** argv)
 		in.close();
 	} // Read directions file into matrix.
 	
+	for (int i = 0; i < 3; i++)
+	{
+		for (int j = 0; j < 3; j++)
+		{
+			cout << matrix[i][j] << " ";
+		}
+		cout << endl;
+	}
+	
+	cout << endl;
+	
+	Transpose(matrix, 3);
 	for (int i = 0; i < 3; i++)
 	{
 		for (int j = 0; j < 3; j++)
