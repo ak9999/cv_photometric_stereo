@@ -18,7 +18,9 @@ using namespace ComputerVisionProjects;
 /* Shortcut method for 3 x 3 matrices:
 https://www.khanacademy.org/math/algebra-home/alg-matrices/alg-determinants-and-inverses-of-large-matrices/v/finding-the-determinant-of-a-3x3-matrix-method-1
 */
-double GetDeterminant(array<array<double, 3>, 3> mat);
+long double GetDeterminant(array<array<double, 3>, 3> mat);
+
+array<array<double, 3>, 3> Invert(array<array<double, 3>, 3> mat);
 
 int main(int argc, char ** argv)
 {
@@ -83,12 +85,14 @@ int main(int argc, char ** argv)
 		in.close();
 	} // Read directions file into matrix.
 
-	double determinant = GetDeterminant(matrix);
+	long double determinant = GetDeterminant(matrix);
 	if (determinant == 0)
 	{
 		cout << "Determinant is zero. Matrix not invertible. Exiting.\n";
 		return -1;
 	}
+	
+	cout << determinant << endl;
 
 	// Write image to output.
 	if (!WriteImage(output, needle_map))
@@ -99,9 +103,9 @@ int main(int argc, char ** argv)
 	return 0;
 }
 
-double GetDeterminant(array<array<double, 3>, 3> mat)
+long double GetDeterminant(array<array<double, 3>, 3> mat)
 {
-	double a = (mat[0][0] * mat[1][1] * mat[2][2]) + (mat[1][0] * mat[2][1] * mat[3][2]) + (mat[2][0] * mat[3][1] * mat[4][2]);
-	double b = (mat[0][2] * mat[1][1] * mat[2][0]) + (mat[1][2] * mat[2][1] * mat[3][0]) + (mat[2][2] * mat[3][1] * mat[4][0]);
+	long double a = (mat[0][0] * mat[1][1] * mat[2][2]) + (mat[0][1] * mat[1][2] * mat[2][0]) + (mat[0][2] * mat[1][0] * mat[2][1]);
+	long double b = (mat[2][0] * mat[1][1] * mat[0][2]) + (mat[2][1] * mat[1][2] * mat[0][0]) + (mat[2][2] * mat[1][0] * mat[0][1]);
 	return a-b;
 }
