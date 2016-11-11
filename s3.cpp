@@ -20,7 +20,7 @@ https://www.khanacademy.org/math/algebra-home/alg-matrices/alg-determinants-and-
 */
 long double GetDeterminant(array<array<double, 3>, 3> mat);
 
-array<array<double, 3>, 3> Invert(array<array<double, 3>, 3> mat);
+array<array<double, 3>, 3> Invert(array<array<double, 3>, 3> mat, double det);
 
 int main(int argc, char ** argv)
 {
@@ -92,7 +92,15 @@ int main(int argc, char ** argv)
 		return -1;
 	}
 	
-	cout << determinant << endl;
+	auto invert = Invert(matrix, determinant);
+	for (int i = 0; i < 3; i++)
+	{
+		for (int j = 0; j < 3; j++)
+		{
+			cout << invert[i][j] << " ";
+		}
+		cout << endl;
+	}
 
 	// Write image to output.
 	if (!WriteImage(output, needle_map))
@@ -108,4 +116,21 @@ long double GetDeterminant(array<array<double, 3>, 3> mat)
 	long double a = (mat[0][0] * mat[1][1] * mat[2][2]) + (mat[0][1] * mat[1][2] * mat[2][0]) + (mat[0][2] * mat[1][0] * mat[2][1]);
 	long double b = (mat[2][0] * mat[1][1] * mat[0][2]) + (mat[2][1] * mat[1][2] * mat[0][0]) + (mat[2][2] * mat[1][0] * mat[0][1]);
 	return a-b;
+}
+
+array<array<double, 3>, 3> Invert(array<array<double, 3>, 3> mat, double det)
+{
+	double invdet = 1 / det;
+
+	array<array<double, 3>, 3> inv_mat = {};
+	inv_mat[0][0] = mat[1][1] * mat[2][2] - mat[2][1] * mat[1][2] * invdet;
+	inv_mat[0][1] = mat[0][2] * mat[2][1] - mat[0][1] * mat[2][2] * invdet;
+	inv_mat[0][2] = mat[0][1] * mat[1][2] - mat[0][2] * mat[1][1] * invdet;
+	inv_mat[1][0] = mat[1][2] * mat[2][0] - mat[1][0] * mat[2][2] * invdet;
+	inv_mat[1][1] = mat[0][0] * mat[2][2] - mat[0][2] * mat[2][0] * invdet;
+	inv_mat[1][2] = mat[1][0] * mat[0][2] - mat[0][0] * mat[1][2] * invdet;
+	inv_mat[2][0] = mat[1][0] * mat[2][1] - mat[2][0] * mat[1][1] * invdet;
+	inv_mat[2][1] = mat[2][0] * mat[0][1] - mat[0][0] * mat[2][1] * invdet;
+	inv_mat[2][2] = mat[0][0] * mat[1][1] - mat[1][0] * mat[0][1] * invdet;
+	return inv_mat;
 }
