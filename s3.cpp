@@ -15,6 +15,113 @@
 using namespace std;
 using namespace ComputerVisionProjects;
 
+int GetObjectArea(Image &img);
+double Determinant(array<array<double, 3>, 3> a, int n);
+void CoFactor(array<array<double, 3>, 3> a, int n, array<array<double, 3>, 3> &b);
+void Transpose(array<array<double, 3>, 3> &a, int n);
+
+void InverseDet(array<array<double, 3>, 3> &a, double det);
+
+int main(int argc, char ** argv)
+{
+	if (argc != 8)
+	{
+		cout <<
+		"Usage: " << argv[0] << " {input directions} {image 1} {image 2} {image 3} {step} {threshold} {output}"
+		<< endl;
+		return 0;
+	}
+
+	const string directions(argv[1]);
+	const string image1(argv[2]);
+	const string image2(argv[3]);
+	const string image3(argv[4]);
+	const int step = atoi(argv[5]);
+	const int threshold = atoi(argv[6]);
+	const string output(argv[7]);
+
+	array<array<double, 3>, 3> matrix = {};
+	array<array<double, 3>, 3> cofactor = {};
+
+	// Instantiate Image objects.
+	Image object1, object2, object3, needle_map;
+	if (!ReadImage(image1, &object1))
+	{
+		cout << "Can\'t read file " << image1 << ", sorry." << endl;
+		return 0;
+	}
+
+	if (!ReadImage(image2, &object2))
+	{
+		cout << "Can\'t read file " << image2 << ", sorry." << endl;
+		return 0;
+	}
+
+	if (!ReadImage(image3, &object3))
+	{
+		cout << "Can\'t read file " << image3 << ", sorry." << endl;
+		return 0;
+	}
+
+	needle_map.AllocateSpaceAndSetSize(object1.num_rows(), object1.num_columns());
+	needle_map.SetNumberGrayLevels(object1.num_gray_levels());
+
+	{
+		fstream in(directions);
+		if(!in.is_open())
+		{
+			cout << directions << " can't be opened for reading." << endl;
+			return 0;
+		}
+		string line;
+		for (int i = 0; i < 3; i++)
+		{
+			getline(in, line);
+			stringstream buffer(line);
+			for (int j = 0; j < 3; j++)
+			{
+				buffer >> matrix[i][j];
+			}
+		}
+		in.close();
+	} // Read directions file into matrix.
+	
+	double det = Determinant(matrix,3);
+	CoFactor(matrix, 3, cofactor);
+	
+	Transpose(cofactor, 3);
+	InverseDet(cofactor, det);
+	for (int i = 0; i < 3; ++i)
+	{
+		for (int j = 0; j < 3; ++j)
+			cout << cofactor[i][j] << " ";
+		cout << endl;
+	}
+	// Write image to output.
+	if (!WriteImage(output, needle_map))
+	{
+		cout << "Can't write image to file " << output << endl;
+		return 0;
+	}
+	return 0;
+}
+
+int GetObjectArea(Image &img)
+{
+	int area = 0;
+
+	for (unsigned int i = 0; i < img.num_rows(); i++)
+	{
+		for (unsigned int j = 0; j < img.num_columns(); j++)
+		{
+			// Just count every white pixel.
+			if (img.GetPixel(i,j) != 0) { area += 1; }
+		}
+	}
+
+	return area;
+}
+
 double Determinant(array<array<double, 3>, 3> a, int n)
 {
    int i,j,j1,j2;
@@ -102,116 +209,3 @@ void InverseDet(array<array<double, 3>, 3> &a, double det)
       }
    }
 }
-
-int main(int argc, char ** argv)
-{
-	if (argc != 8)
-	{
-		cout <<
-		"Usage: " << argv[0] << " {input directions} {image 1} {image 2} {image 3} {step} {threshold} {output}"
-		<< endl;
-		return 0;
-	}
-
-	const string directions(argv[1]);
-	const string image1(argv[2]);
-	const string image2(argv[3]);
-	const string image3(argv[4]);
-	const int step = atoi(argv[5]);
-	const int threshold = atoi(argv[6]);
-	const string output(argv[7]);
-
-	array<array<double, 3>, 3> matrix = {};
-	array<array<double, 3>, 3> cofactor = {};
-
-	// Instantiate Image objects.
-	Image object1, object2, object3, needle_map;
-	if (!ReadImage(image1, &object1))
-	{
-		cout << "Can\'t read file " << image1 << ", sorry." << endl;
-		return 0;
-	}
-
-	if (!ReadImage(image2, &object2))
-	{
-		cout << "Can\'t read file " << image2 << ", sorry." << endl;
-		return 0;
-	}
-
-	if (!ReadImage(image3, &object3))
-	{
-		cout << "Can\'t read file " << image3 << ", sorry." << endl;
-		return 0;
-	}
-
-	needle_map.AllocateSpaceAndSetSize(object1.num_rows(), object1.num_columns());
-	needle_map.SetNumberGrayLevels(object1.num_gray_levels());
-
-	{
-		fstream in(directions);
-		if(!in.is_open())
-		{
-			cout << directions << " can't be opened for reading." << endl;
-			return 0;
-		}
-		string line;
-		for (int i = 0; i < 3; i++)
-		{
-			getline(in, line);
-			stringstream buffer(line);
-			for (int j = 0; j < 3; j++)
-			{
-				buffer >> matrix[i][j];
-			}
-		}
-		in.close();
-	} // Read directions file into matrix.
-	
-	cout << "Original Matrix: " << endl;
-	for (int i = 0; i < 3; i++)
-	{
-		for (int j = 0; j < 3; j++)
-		{
-			cout << matrix[i][j] << " ";
-		}
-		cout << endl;
-	}
-
-	cout << endl;
-	
-	double det = Determinant(matrix,3);
-	
-	cout << "Cofactor Matrix: " << endl;
-	CoFactor(matrix, 3, cofactor);
-	for (int i = 0; i < 3; i++)
-	{
-		for (int j = 0; j < 3; j++)
-		{
-			cout << cofactor[i][j] << " ";
-		}
-		cout << endl;
-	}
-	
-	cout << endl;
-	
-	Transpose(cofactor, 3);
-	InverseDet(cofactor, det);
-	cout << "Inverse Matrix: " << endl;
-	for (int i = 0; i < 3; i++)
-	{
-		for (int j = 0; j < 3; j++)
-		{
-			cout << cofactor[i][j] << " ";
-		}
-		cout << endl;
-	}
-
-	// Write image to output.
-	if (!WriteImage(output, needle_map))
-	{
-		cout << "Can't write image to file " << output << endl;
-		return 0;
-	}
-	return 0;
-}
-
