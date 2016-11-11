@@ -22,6 +22,36 @@ long double GetDeterminant(array<array<double, 3>, 3> mat);
 
 array<array<double, 3>, 3> Invert(array<array<double, 3>, 3> mat, double det);
 
+double Determinant(array<array<double, 3>, 3> a, int n=3)
+{
+   int i,j,j1,j2;
+   double det = 0;
+   array<array<double, 3>, 3> m = {};
+
+   if (n < 1) { /* Error */
+
+   } else if (n == 1) { /* Shouldn't get used */
+      det = a[0][0];
+   } else if (n == 2) {
+      det = a[0][0] * a[1][1] - a[1][0] * a[0][1];
+   } else {
+      det = 0;
+      for (j1=0;j1<n;j1++) {
+         for (i=1;i<n;i++) {
+            j2 = 0;
+            for (j=0;j<n;j++) {
+               if (j == j1)
+                  continue;
+               m[i-1][j2] = a[i][j];
+               j2++;
+            }
+         }
+         det += pow(-1.0,j1+2.0) * a[0][j1] * Determinant(m,n-1);
+      }
+   }
+   return(det);
+}
+
 int main(int argc, char ** argv)
 {
 	if (argc != 8)
@@ -41,6 +71,9 @@ int main(int argc, char ** argv)
 	const string output(argv[7]);
 
 	array<array<double, 3>, 3> matrix = {};
+	double **mat1 = new double*[3];
+	for (int i = 0; i < 3; ++i)
+		mat1[i] = new double[3];
 
 	// Instantiate Image objects.
 	Image object1, object2, object3, needle_map;
@@ -84,23 +117,29 @@ int main(int argc, char ** argv)
 		}
 		in.close();
 	} // Read directions file into matrix.
-
-	long double determinant = GetDeterminant(matrix);
-	if (determinant == 0)
-	{
-		cout << "Determinant is zero. Matrix not invertible. Exiting.\n";
-		return -1;
-	}
 	
-	auto invert = Invert(matrix, determinant);
 	for (int i = 0; i < 3; i++)
 	{
 		for (int j = 0; j < 3; j++)
 		{
-			cout << invert[i][j] << " ";
+			cout << matrix[i][j] << " ";
 		}
 		cout << endl;
 	}
+
+	//long double determinant = GetDeterminant(matrix);
+	double det1 = Determinant(matrix);
+	cout << det1 << endl;
+	
+	//auto invert = Invert(matrix, det1);
+	//for (int i = 0; i < 3; i++)
+	//{
+	//	for (int j = 0; j < 3; j++)
+	//	{
+	//		cout << invert[i][j] << " ";
+	//	}
+	//	cout << endl;
+	//}
 
 	// Write image to output.
 	if (!WriteImage(output, needle_map))
