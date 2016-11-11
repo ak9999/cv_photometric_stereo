@@ -7,13 +7,13 @@ Professor:      Stamos
 Purpose:        Homework #4
 *************************************************
 
-# "Lambertian Model"
+# "Photometric Stereo"
 
 ## A vision system that recovers the orientation and reflectance of an object’s surface using photometric stereo.
 
 I. Parts Completed
 - s1
-- s2 Not done yet
+- s2
 - s3 Not done yet
 - s4 Not done yet
 
@@ -29,6 +29,8 @@ III. Run Instructions
 
 - ./s2 {input parameters file} {image 1} {image 2} {image 3} {output directions file}
 - ./s3 {input directions} {image 1} {image 2} {image 3} {step} {threshold} {output}
+		I used a step value of 5 and a threshold of 120.
+
 - ./s4 {input directions} {image 1} {image 2} {image 3} {threshold} {output}
 
 IV. Input and Output Files
