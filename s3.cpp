@@ -6,12 +6,19 @@
 #include <iostream>
 #include <string>
 #include <fstream>
+#include <sstream>
+#include <array>
 #include <cmath>
 #include <cstdlib>
 #include "image.h"
 
 using namespace std;
 using namespace ComputerVisionProjects;
+
+/* Shortcut method for 3 x 3 matrices:
+	https://www.khanacademy.org/math/algebra-home/alg-matrices/alg-determinants-and-inverses-of-large-matrices/v/finding-the-determinant-of-a-3x3-matrix-method-1
+*/
+double GetDeterminant(array<array<double, 3>, 3> mat);
 
 int main(int argc, char ** argv)
 {
@@ -31,48 +38,70 @@ int main(int argc, char ** argv)
 	const int threshold = atoi(argv[6]);
 	const string output(argv[7]);
 
-	// {
-	// 	fstream in(directions);
-	// 	if(!in.is_open())
-	// 	{
-	// 		cout << directions << " can't be opened for reading." << endl;
-	// 		return 0;
-	// 	}
-	// 	params >> center_x >> center_y >> radius;
-	// 	params.close();
-	// } // Read parameter file into variables.
+	array<array<double, 3>, 3> matrix = {};
 
-	// Image sphere1, sphere2, sphere3;
-	// if (!ReadImage(image1, &sphere1))
-	// {
-	// 	cout << "Can\'t read file " << image1 << ", sorry." << endl;
-	// 	return 0;
-	// }
+	// Instantiate Image objects.
+	Image object1, object2, object3, needle_map;
+	if (!ReadImage(image1, &object1))
+	{
+		cout << "Can\'t read file " << image1 << ", sorry." << endl;
+		return 0;
+	}
 
-	// if (!ReadImage(image2, &sphere2))
-	// {
-	// 	cout << "Can\'t read file " << image2 << ", sorry." << endl;
-	// 	return 0;
-	// }
+	if (!ReadImage(image2, &object2))
+	{
+		cout << "Can\'t read file " << image2 << ", sorry." << endl;
+		return 0;
+	}
 
-	// if (!ReadImage(image3, &sphere3))
-	// {
-	// 	cout << "Can\'t read file " << image3 << ", sorry." << endl;
-	// 	return 0;
-	// }
+	if (!ReadImage(image3, &object3))
+	{
+		cout << "Can\'t read file " << image3 << ", sorry." << endl;
+		return 0;
+	}
 
-	// {
-	// 	fstream directions(output_directions, std::ios::out);
-	// 	if(!directions.is_open())
-	// 	{
-	// 		cout << output_directions << " can't be opened for reading." << endl;
-	// 		return 0;
-	// 	}
-	// 	directions << get<0>(scale1) << " " << get<1>(scale1) << " " << get<2>(scale1) << endl;
-	// 	directions << get<0>(scale2) << " " << get<1>(scale2) << " " << get<2>(scale2) << endl;
-	// 	directions << get<0>(scale3) << " " << get<1>(scale3) << " " << get<2>(scale3) << endl;
-	// 	directions.close();
-	// } // Read parameter file into variables.
+	needle_map.AllocateSpaceAndSetSize(object1.num_rows(), object1.num_columns());
+	needle_map.SetNumberGrayLevels(object1.num_gray_levels());
 
+	{
+		fstream in(directions);
+		if(!in.is_open())
+		{
+			cout << directions << " can't be opened for reading." << endl;
+			return 0;
+		}
+		string line;
+		for (int i = 0; i < 3; i++)
+		{
+			getline(in, line);
+			stringstream buffer(line);
+			for (int j = 0; j < 3; j++)
+			{
+				buffer >> matrix[i][j];
+			}
+		}
+		in.close();
+	} // Read directions file into matrix.
+
+	double determinant = GetDeterminant(matrix);
+	if (determinant == 0)
+	{
+		cout << "Determinant is zero. Matrix not invertible. Exiting.\n";
+		return -1;
+	}
+
+	// Write image to output.
+	if (!WriteImage(output, needle_map))
+	{
+		cout << "Can't write image to file " << output << endl;
+		return 0;
+	}
 	return 0;
+}
+
+double GetDeterminant(array<array<double, 3>, 3> mat)
+{
+	double a = (mat[0][0] * mat[1][1] * mat[2][2]) + (mat[1][0] * mat[2][1] * mat[3][2]) + (mat[2][0] * mat[3][1] * mat[4][2]);
+	double b = (mat[0][2] * mat[1][1] * mat[2][0]) + (mat[1][2] * mat[2][1] * mat[3][0]) + (mat[2][2] * mat[3][1] * mat[4][0]);
+	return a-b;
 }
