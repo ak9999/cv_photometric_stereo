@@ -15,14 +15,7 @@
 using namespace std;
 using namespace ComputerVisionProjects;
 
-/* Shortcut method for 3 x 3 matrices:
-https://www.khanacademy.org/math/algebra-home/alg-matrices/alg-determinants-and-inverses-of-large-matrices/v/finding-the-determinant-of-a-3x3-matrix-method-1
-*/
-long double GetDeterminant(array<array<double, 3>, 3> mat);
-
-array<array<double, 3>, 3> Invert(array<array<double, 3>, 3> mat, double det);
-
-double Determinant(array<array<double, 3>, 3> a, int n=3)
+double Determinant(array<array<double, 3>, 3> a, int n)
 {
    int i,j,j1,j2;
    double det = 0;
@@ -52,7 +45,7 @@ double Determinant(array<array<double, 3>, 3> a, int n=3)
    return(det);
 }
 
-void CoFactor(array<array<double, 3>, 3> a,int n, array<array<double, 3>, 3> &b)
+void CoFactor(array<array<double, 3>, 3> a, int n, array<array<double, 3>, 3> &b)
 {
    int i,j,ii,jj,i1,j1;
    double det;
@@ -85,7 +78,7 @@ void CoFactor(array<array<double, 3>, 3> a,int n, array<array<double, 3>, 3> &b)
    }
 }
 
-void Transpose(array<array<double, 3>, 3>  &a,int n)
+void Transpose(array<array<double, 3>, 3> &a, int n)
 {
    int i,j;
    double tmp;
@@ -95,6 +88,17 @@ void Transpose(array<array<double, 3>, 3>  &a,int n)
          tmp = a[i][j];
          a[i][j] = a[j][i];
          a[j][i] = tmp;
+      }
+   }
+}
+
+void InverseDet(array<array<double, 3>, 3> &a, double det)
+{
+   for (int i=0; i < 3; i++)
+   {
+      for (int j=0; j < 3; j++)
+      {
+         a[i][j] = (1/det) * a[i][j];
       }
    }
 }
@@ -118,9 +122,7 @@ int main(int argc, char ** argv)
 	const string output(argv[7]);
 
 	array<array<double, 3>, 3> matrix = {};
-	double **mat1 = new double*[3];
-	for (int i = 0; i < 3; ++i)
-		mat1[i] = new double[3];
+	array<array<double, 3>, 3> cofactor = {};
 
 	// Instantiate Image objects.
 	Image object1, object2, object3, needle_map;
@@ -165,18 +167,7 @@ int main(int argc, char ** argv)
 		in.close();
 	} // Read directions file into matrix.
 	
-	for (int i = 0; i < 3; i++)
-	{
-		for (int j = 0; j < 3; j++)
-		{
-			cout << matrix[i][j] << " ";
-		}
-		cout << endl;
-	}
-	
-	cout << endl;
-	
-	Transpose(matrix, 3);
+	cout << "Original Matrix: " << endl;
 	for (int i = 0; i < 3; i++)
 	{
 		for (int j = 0; j < 3; j++)
@@ -186,19 +177,34 @@ int main(int argc, char ** argv)
 		cout << endl;
 	}
 
-	//long double determinant = GetDeterminant(matrix);
-	double det1 = Determinant(matrix);
-	cout << det1 << endl;
+	cout << endl;
 	
-	//auto invert = Invert(matrix, det1);
-	//for (int i = 0; i < 3; i++)
-	//{
-	//	for (int j = 0; j < 3; j++)
-	//	{
-	//		cout << invert[i][j] << " ";
-	//	}
-	//	cout << endl;
-	//}
+	double det = Determinant(matrix,3);
+	
+	cout << "Cofactor Matrix: " << endl;
+	CoFactor(matrix, 3, cofactor);
+	for (int i = 0; i < 3; i++)
+	{
+		for (int j = 0; j < 3; j++)
+		{
+			cout << cofactor[i][j] << " ";
+		}
+		cout << endl;
+	}
+	
+	cout << endl;
+	
+	Transpose(cofactor, 3);
+	InverseDet(cofactor, det);
+	cout << "Inverse Matrix: " << endl;
+	for (int i = 0; i < 3; i++)
+	{
+		for (int j = 0; j < 3; j++)
+		{
+			cout << cofactor[i][j] << " ";
+		}
+		cout << endl;
+	}
 
 	// Write image to output.
 	if (!WriteImage(output, needle_map))
@@ -209,26 +215,3 @@ int main(int argc, char ** argv)
 	return 0;
 }
 
-long double GetDeterminant(array<array<double, 3>, 3> mat)
-{
-	long double a = (mat[0][0] * mat[1][1] * mat[2][2]) + (mat[0][1] * mat[1][2] * mat[2][0]) + (mat[0][2] * mat[1][0] * mat[2][1]);
-	long double b = (mat[2][0] * mat[1][1] * mat[0][2]) + (mat[2][1] * mat[1][2] * mat[0][0]) + (mat[2][2] * mat[1][0] * mat[0][1]);
-	return a-b;
-}
-
-array<array<double, 3>, 3> Invert(array<array<double, 3>, 3> mat, double det)
-{
-	double invdet = 1 / det;
-
-	array<array<double, 3>, 3> inv_mat = {};
-	inv_mat[0][0] = mat[1][1] * mat[2][2] - mat[2][1] * mat[1][2] * invdet;
-	inv_mat[0][1] = mat[0][2] * mat[2][1] - mat[0][1] * mat[2][2] * invdet;
-	inv_mat[0][2] = mat[0][1] * mat[1][2] - mat[0][2] * mat[1][1] * invdet;
-	inv_mat[1][0] = mat[1][2] * mat[2][0] - mat[1][0] * mat[2][2] * invdet;
-	inv_mat[1][1] = mat[0][0] * mat[2][2] - mat[0][2] * mat[2][0] * invdet;
-	inv_mat[1][2] = mat[1][0] * mat[0][2] - mat[0][0] * mat[1][2] * invdet;
-	inv_mat[2][0] = mat[1][0] * mat[2][1] - mat[2][0] * mat[1][1] * invdet;
-	inv_mat[2][1] = mat[2][0] * mat[0][1] - mat[0][0] * mat[2][1] * invdet;
-	inv_mat[2][2] = mat[0][0] * mat[1][1] - mat[1][0] * mat[0][1] * invdet;
-	return inv_mat;
-}
