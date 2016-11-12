@@ -103,6 +103,11 @@ int main(int argc, char ** argv)
 				double b3 = object3.GetPixel(i,j);
 				if (b1 > threshold && b2 > threshold && b3 > threshold)
 				{
+					object1.SetPixel(i-1,j,0);
+					object1.SetPixel(i,j-1,0);
+					object1.SetPixel(i,j+1,0);
+					object1.SetPixel(i+1,j,0);
+					
 					double x = inverse[0][0] * b1 + inverse[0][1] * b2 + inverse[0][2] * b3;
 					double y = inverse[1][0] * b1 + inverse[1][1] * b2 + inverse[1][2] * b3;
 					double z = inverse[2][0] * b1 + inverse[2][1] * b2 + inverse[2][2] * b3;
