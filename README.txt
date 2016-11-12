@@ -14,8 +14,8 @@ Purpose:        Homework #4
 I. Parts Completed
 - s1
 - s2
-- s3 Not done yet
-- s4 Not done yet
+- s3
+- s4
 
 
 II. Bugs Encountered
@@ -33,6 +33,7 @@ III. Run Instructions
 		I used a step value of 9 and a threshold of 90.
 
 - ./s4 {input directions} {image 1} {image 2} {image 3} {threshold} {output}
+		I used a threshold value of 100.
 
 IV. Input and Output Files
 	User's PGM images.
