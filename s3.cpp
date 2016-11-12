@@ -8,15 +8,11 @@
 #include <fstream>
 #include <sstream>
 #include <array>
-#include <tuple>
 #include <cmath>
 #include <cstdlib>
 #include "image.h"
 
-using std::cout; using std::endl;
-using std::array; using std::fstream;
-using std::stringstream; using std::string;
-using std::pow;
+using namespace std;
 using namespace ComputerVisionProjects;
 using Matrix3 = array<array<double, 3>, 3>;
 
@@ -29,7 +25,7 @@ void InverseDet(Matrix3 &a, double det);
  * and edited to work with types Matrix3 and changed to be more like Modern C++.
  */
 double Determinant(Matrix3 a, int n);
-void CoFactor(Matrix3 a, int n, Matrix3 &b);
+Matrix3 CoFactor(Matrix3 a, int n);
 void Transpose(Matrix3 &a, int n);
 
 int main(int argc, char ** argv)
@@ -51,7 +47,6 @@ int main(int argc, char ** argv)
 	const string output(argv[7]);
 
 	Matrix3 matrix = {};
-	Matrix3 cofactor = {};
 
 	// Instantiate Image objects.
 	Image object1, object2, object3, needle_map;
@@ -97,18 +92,33 @@ int main(int argc, char ** argv)
 	} // Read directions file into matrix.
 	
 	double det = Determinant(matrix,3);
-	CoFactor(matrix, 3, cofactor);
-	
-	Transpose(cofactor, 3);
-	InverseDet(cofactor, det);
-	for (int i = 0; i < 3; ++i)
+	Matrix3 inverse = CoFactor(matrix, 3);
+	Transpose(inverse, 3);
+	InverseDet(inverse, det);
+
 	{
-		for (int j = 0; j < 3; ++j)
-			cout << cofactor[i][j] << " ";
-		cout << endl;
+		for (unsigned int i = 0; i < object1.num_rows(); i+=step)
+		{
+			for (unsigned int j = 0; j < object1.num_columns(); j+=step)
+			{
+				double b1 = object1.GetPixel(i,j);
+				double b2 = object2.GetPixel(i,j);
+				double b3 = object3.GetPixel(i,j);
+				if (b1 > threshold && b2 > threshold && b3 > threshold)
+				{
+					double x = inverse[0][0] * b1 + inverse[0][1] * b2 + inverse[0][2] * b3;
+					double y = inverse[1][0] * b1 + inverse[1][1] * b2 + inverse[1][2] * b3;
+					double z = inverse[2][0] * b1 + inverse[2][1] * b2 + inverse[2][2] * b3;
+					double mag = sqrt( x*x + y*y + z*z );
+					x = x/mag; y = y/mag; z = z/mag;
+					DrawLine(i, j, (int)(i + 10 * x), (int)(j + 10 * y), 255, &object1);
+				}
+			}
+		}
 	}
+
 	// Write image to output.
-	if (!WriteImage(output, needle_map))
+	if (!WriteImage(output, object1))
 	{
 		cout << "Can't write image to file " << output << endl;
 		return 0;
@@ -143,10 +153,11 @@ double Determinant(Matrix3 a, int n)
 	return(det);
 }
 
-void CoFactor(Matrix3 a, int n, Matrix3 &b)
+Matrix3 CoFactor(Matrix3 a, int n)
 {
 	int i,j,ii,jj,i1,j1;
 	double det;
+	Matrix3 b = {};
 	Matrix3 c = {};
 
 	for (j=0;j<n;j++) {
@@ -174,15 +185,15 @@ void CoFactor(Matrix3 a, int n, Matrix3 &b)
 			b[i][j] = pow(-1.0,i+j+2.0) * det;
 		}
 	}
+	return b;
 }
 
 void Transpose(Matrix3 &a, int n)
 {
-	int i,j;
 	double tmp;
 
-	for (i=1;i<n;i++) {
-		for (j=0;j<i;j++) {
+	for (int i = 1; i < n; i++) {
+		for (int j = 0; j < i; j++) {
 			tmp = a[i][j];
 			a[i][j] = a[j][i];
 			a[j][i] = tmp;
