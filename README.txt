@@ -29,7 +29,7 @@ III. Run Instructions
 
 - ./s2 {input parameters file} {image 1} {image 2} {image 3} {output directions file}
 - ./s3 {input directions} {image 1} {image 2} {image 3} {step} {threshold} {output}
-		I used a step value of 5 and a threshold of 120.
+		I used a step value of 9 and a threshold of 90.
 
 - ./s4 {input directions} {image 1} {image 2} {image 3} {threshold} {output}
 
