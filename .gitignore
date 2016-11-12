@@ -38,9 +38,6 @@ s4
 # Archives
 *.zip
 
-# PGM images
-*.pgm
-
 # IDE files
 *.config
 *.creator
