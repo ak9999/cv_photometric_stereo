@@ -106,7 +106,8 @@ int main(int argc, char ** argv)
 					double y = inverse[1][0] * b1 + inverse[1][1] * b2 + inverse[1][2] * b3;
 					double z = inverse[2][0] * b1 + inverse[2][1] * b2 + inverse[2][2] * b3;
 					double mag = sqrt( x*x + y*y + z*z );
-					object1.SetPixel(i, j, b1*mag);
+					int val = b1*mag;
+					object1.SetPixel(i, j, val);
 				}
 				else { object1.SetPixel(i,j,0); }
 			}
