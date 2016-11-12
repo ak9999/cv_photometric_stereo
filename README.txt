@@ -28,6 +28,7 @@ III. Run Instructions
         I used a threshold value of 100.
 
 - ./s2 {input parameters file} {image 1} {image 2} {image 3} {output directions file}
+
 - ./s3 {input directions} {image 1} {image 2} {image 3} {step} {threshold} {output}
 		I used a step value of 9 and a threshold of 90.
 
