@@ -68,9 +68,6 @@ int main(int argc, char ** argv)
 		return 0;
 	}
 
-	needle_map.AllocateSpaceAndSetSize(object1.num_rows(), object1.num_columns());
-	needle_map.SetNumberGrayLevels(object1.num_gray_levels());
-
 	{
 		fstream in(directions);
 		if(!in.is_open())
